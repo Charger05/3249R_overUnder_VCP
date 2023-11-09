@@ -36,7 +36,7 @@ const double pi = 3.14159265359; // Define the number pi
 const double circum4Omni = 4*pi;
 const double innerCircum = 2*pi*6;//circumference of robot
 const double ratio = 7/5;
-const double botCircum = 2*pi*;//circumference of robot's turning circle
+const double botCircum = 2*pi*13;//circumference of robot's turning circle
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -68,12 +68,12 @@ void stopDrivetrain() {
 
 // This function resets all the chassis motor encoders to zero.
 void clearChassisRotation() {
-  leftFront.resetRotation();
-  leftMid.resetRotation();
-  leftRear.resetRotation();
-  ptoFront.resetRotation();
-  ptoRear.resetRotation();
-  rightRear.resetRotation();
+  leftFront.resetPosition();
+  leftMid.resetPosition();
+  leftRear.resetPosition();
+  ptoFront.resetPosition();
+  ptoRear.resetPosition();
+  rightRear.resetPosition();
   // Stop the robot.
 }
 
@@ -110,7 +110,7 @@ void moveChassis(double distance, int leftVel, int rightVel) {
       average value of all the drivetrain's motors.
       2. Store the average value of the drivetrain's motor positions.
       */
-      degC = (leftFront.rotation(degrees) + (leftMid.rotation(degrees)/21.5) + leftRear.rotation(degrees) + ptoFront.rotation(degrees) + ptoRear.rotation(degrees)+ rightRear.rotation(degrees)) /6;
+      degC = (leftFront.position(degrees) + (leftMid.position(degrees)/21.5) + leftRear.position(degrees) + ptoFront.position(degrees) + ptoRear.position(degrees)+ rightRear.position(degrees)) /6;
 
       leftFront.spin(forward);
       leftMid.spin(forward);
@@ -124,7 +124,7 @@ void moveChassis(double distance, int leftVel, int rightVel) {
     // distance.
     while (degC > degGoal) {
       // Same calculations that are in the previous while loop.
-      degC = (leftFront.rotation(degrees) + (leftMid.rotation(degrees)/21.5) + leftRear.rotation(degrees) + ptoFront.rotation(degrees) + ptoRear.rotation(degrees)+ rightRear.rotation(degrees)) /6;
+      degC = (leftFront.position(degrees) + (leftMid.position(degrees)/21.5) + leftRear.position(degrees) + ptoFront.position(degrees) + ptoRear.position(degrees)+ rightRear.position(degrees)) /6;
 
       leftFront.spin(reverse);
       leftMid.spin(reverse);
@@ -165,7 +165,7 @@ void pivotRight(double degr) {
       Store the average value of the distance covered by the drivetrain's left
       side motors.
       */
-      distC = leftFront.rotation(degrees) * ((circum4Omni) / 360) * 0.845;
+      distC = leftFront.position(degrees) * ((circum4Omni) / 360) * 0.845;
       leftFront.spin(forward);
       leftMid.spin(forward);
       leftRear.spin(forward);
@@ -177,7 +177,7 @@ void pivotRight(double degr) {
     // Pivot the robot backwards while the robot hasn't met the desired angle.
     while (distC > distG) {
       // Same calculations that are in the above while loop.
-      distC = leftFront.rotation(degrees) * ((circum4Omni) / 360) * 0.845;
+      distC = leftFront.position(degrees) * ((circum4Omni) / 360) * 0.845;
       leftFront.spin(reverse);
       leftMid.spin(reverse);
       leftRear.spin(reverse);
@@ -220,7 +220,7 @@ void rotateRight(double degr) {
       Store the average value of the distance covered by the drivetrain's left
       side motors.
       */
-      distC = ((leftFront.rotation(degrees) + rightRear.rotation(degrees))/2) * ((circum4Omni) / 360) * 0.845;
+      distC = ((leftFront.position(degrees) + rightRear.position(degrees))/2) * ((circum4Omni) / 360) * 0.845;
       leftFront.spin(forward);
       leftMid.spin(forward);
       leftRear.spin(forward);
@@ -232,7 +232,7 @@ void rotateRight(double degr) {
     // Pivot the robot backwards while the robot hasn't met the desired angle.
     while (distC > distG) {
       // Same calculations that are in the above while loop.
-      distC = ((leftFront.rotation(degrees) + rightRear.rotation(degrees))/2) * ((circum4Omni) / 360) * 0.845;
+      distC = ((leftFront.position(degrees) + rightRear.position(degrees))/2) * ((circum4Omni) / 360) * 0.845;
       leftFront.spin(reverse);
       leftMid.spin(reverse);
       leftRear.spin(reverse);
@@ -310,33 +310,26 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-		power = Controller1.Axis3.position();
-    turn = Controller1.Axis1.position();
+		power = Controller1.Axis3.position()*0.12;
+    turn = Controller1.Axis1.position()*0.12;
 		left = power + turn;
 		right = power - turn;
 
-    leftFront.setVelocity(left, percent);
-    leftMid.setVelocity(left/(21/5), percent);
-    leftRear.setVelocity(left, percent);
+    leftFront.spin(forward, left, volt);
+    leftMid.spin(forward, left/(21/5), volt);
+    leftRear.spin(forward, left, volt);
 
-    rightRear.setVelocity(right, percent);
-
-    leftFront.spin(forward);
-    leftMid.spin(forward);
-    leftRear.spin(forward);
-
-    rightRear.spin(forward);
+    rightRear.spin(forward, right, volt);
 
 		if(pto){
-      ptoFront.setVelocity(right, percent);
-      ptoRear.setVelocity(right, percent);
-      ptoFront.spin(forward);
-      ptoRear.spin(forward);
+      ptoFront.spin(forward, right, volt);
+      ptoRear.spin(forward, right, volt);
     }
     else{
       ptoFront = 0;
 			ptoRear = 0;
     }
+    
     /*
     if (Controller1.ButtonX.pressing()) {
       if(pto){
@@ -367,7 +360,7 @@ void usercontrol(void) {
 			}
 			else{
 				cataAdj = false;
-				cataMtr.resetRotation();
+				cataMtr.resetPosition();
 			}
       waitUntil(!Controller1.ButtonUp.pressing());
     }
