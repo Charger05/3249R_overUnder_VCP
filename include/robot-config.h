@@ -13,6 +13,7 @@ extern motor rightRear;
 extern motor intakeMtr;
 extern motor cataMtr;
 extern digital_out flapsCtl;
+extern digital_out ptoCtl;
 extern bumper cataButton;
 
 /**

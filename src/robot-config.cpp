@@ -18,6 +18,7 @@ motor rightRear = motor(PORT6, ratio18_1, true);
 motor intakeMtr = motor(PORT7, ratio18_1, true);
 motor cataMtr = motor(PORT8, ratio18_1, true);
 digital_out flapsCtl = digital_out(Brain.ThreeWirePort.A);
+digital_out ptoCtl = digital_out(Brain.ThreeWirePort.C);
 bumper cataButton = bumper(Brain.ThreeWirePort.B);
 
 // VEXcode generated functions

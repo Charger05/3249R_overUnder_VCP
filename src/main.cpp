@@ -35,7 +35,6 @@ competition Competition;
 const double pi = 3.14159265359; // Define the number pi
 const double circum4Omni = 4*pi;
 const double innerCircum = 2*pi*6;//circumference of robot
-const double ratio = 7/5;
 const double botCircum = 2*pi*13;//circumference of robot's turning circle
 
 /*---------------------------------------------------------------------------*/
@@ -275,6 +274,9 @@ void autonomous(void) {
   moveChassis(-48, 50, 50);
   */
 
+  //win point auton
+
+
 }
 
 /*---------------------------------------------------------------------------*/
@@ -326,22 +328,33 @@ void usercontrol(void) {
       ptoRear.spin(forward, right, volt);
     }
     else{
-      ptoFront = 0;
-			ptoRear = 0;
+      if(Controller1.ButtonUp.pressing()){
+        ptoFront.spin(forward, 12, volt);
+        ptoRear.spin(forward, 12, volt);        
+      }
+      else if(Controller1.ButtonDown.pressing()){
+        ptoFront.spin(reverse, 12, volt);
+        ptoRear.spin(reverse, 12, volt); 
+      }
+      else{
+        ptoFront.stop(brake);
+        ptoRear.stop(brake);
+      }
     }
-    
-    /*
+  
     if (Controller1.ButtonX.pressing()) {
+      ptoFront.stop(brake);
+      ptoRear.stop(brake);
+
       if(pto){
 				pto = false;
 			}
 			else{
 				pto = true;
 			}
-			
+      ptoCtl.set(!pto);			
 			waitUntil(!Controller1.ButtonX.pressing());
     }
-    */
 
     if (Controller1.ButtonA.pressing()) {
       if(!wing){
@@ -353,8 +366,8 @@ void usercontrol(void) {
       flapsCtl.set(wing);
       waitUntil(!Controller1.ButtonA.pressing());
     }
-
-    if (Controller1.ButtonUp.pressing()) {
+    
+    if (Controller1.ButtonLeft.pressing()) {
       if(!cataAdj){
 				cataAdj = true;
 			}
@@ -362,7 +375,7 @@ void usercontrol(void) {
 				cataAdj = false;
 				cataMtr.resetPosition();
 			}
-      waitUntil(!Controller1.ButtonUp.pressing());
+      waitUntil(!Controller1.ButtonLeft.pressing());
     }
 
     if (Controller1.ButtonL1.pressing()) {
