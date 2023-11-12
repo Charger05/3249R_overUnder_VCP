@@ -312,20 +312,20 @@ void usercontrol(void) {
     // Each time through the loop your program should update motor + servo
     // values based on feedback from the joysticks.
 
-		power = Controller1.Axis3.position()*0.12;
-    turn = Controller1.Axis1.position()*0.12;
+		power = Controller1.Axis3.position();
+    turn = Controller1.Axis1.position();
 		left = power + turn;
 		right = power - turn;
 
-    leftFront.spin(forward, left, volt);
-    leftMid.spin(forward, left/(21/5), volt);
-    leftRear.spin(forward, left, volt);
+    leftFront.spin(forward, left, percent);
+    leftMid.spin(forward, left/(21/5), percent);
+    leftRear.spin(forward, left, percent);
 
-    rightRear.spin(forward, right, volt);
+    rightRear.spin(forward, right, percent);
 
 		if(pto){
-      ptoFront.spin(forward, right, volt);
-      ptoRear.spin(forward, right, volt);
+      ptoFront.spin(forward, right, percent);
+      ptoRear.spin(forward, right, percent);
     }
     else{
       if(Controller1.ButtonUp.pressing()){
